@@ -1,0 +1,314 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+body {
+  /* Dark + royal */
+  background:
+    radial-gradient(1200px 800px at 15% 10%, rgba(124, 58, 237, 0.22), transparent 58%),
+    radial-gradient(900px 700px at 80% 22%, rgba(59, 130, 246, 0.18), transparent 56%),
+    radial-gradient(800px 600px at 70% 90%, rgba(251, 191, 36, 0.10), transparent 60%),
+    #070A14;
+  color: rgba(255, 255, 255, 0.92);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(17, 24, 39, 0.78);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 16px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.95), rgba(37, 99, 235, 0.95));
+  color: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+}
+
+button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+a {
+  color: rgba(251, 191, 36, 0.95);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pill {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.muted {
+  opacity: 0.75;
+}
+
+.small {
+  font-size: 12px;
+}
+
+/* ================= INVITE PAGE ================= */
+
+.invitePage {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 40px;
+}
+
+.inviteAdminHotspot {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  opacity: 0;
+}
+
+.inviteLogoBackdrop {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  pointer-events: none;
+  user-select: none;
+  transform: translateY(-20px);
+  background-image: var(--inviteLogoUrl);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: min(72vw, 520px);
+  filter: grayscale(100%);
+}
+
+.inviteHero {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 26px 20px 10px;
+}
+
+.inviteHeroTopRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inviteAdminButton {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  opacity: 0.65;
+  cursor: pointer;
+  width: auto;
+  padding: 6px 8px;
+  margin: 0;
+}
+
+.inviteKicker {
+  text-align: center;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.68);
+  margin-top: 18px;
+}
+
+.inviteTitle {
+  text-align: center;
+  font-size: clamp(36px, 8vw, 64px);
+  line-height: 1.02;
+  margin-top: 10px;
+}
+
+.inviteSubtitle {
+  text-align: center;
+  max-width: 58ch;
+  margin: 12px auto 0;
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.5;
+}
+
+.inviteCtas {
+  display: grid;
+  gap: 10px;
+  max-width: 420px;
+  margin: 18px auto 0;
+}
+
+.invitePrimary {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(124, 58, 237, 0.95));
+  color: rgba(7, 10, 20, 0.95);
+}
+
+.inviteSecondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.inviteMetaRow {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.inviteMetaPill {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.inviteMetaLabel {
+  font-size: 11px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.inviteMetaValue {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.inviteContent {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 10px 20px;
+}
+
+.inviteSection {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(30, 41, 59, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.inviteSectionTitle {
+  text-align: left;
+  margin: 0;
+  font-size: 18px;
+}
+
+.inviteSectionText {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+}
+
+.inviteGallery {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.inviteGalleryCard {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(2, 6, 23, 0.35);
+}
+
+.inviteGalleryImg {
+  height: 140px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(34, 197, 94, 0.18));
+}
+
+.inviteGalleryImgPlaceholder {
+  display: block;
+}
+
+.inviteGalleryBody {
+  padding: 12px;
+}
+
+.inviteGalleryLabel {
+  font-weight: 800;
+}
+
+.inviteGalleryHint {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.72;
+}
+
+.inviteSectionFootnote {
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+.inviteFinalCta {
+  margin-top: 16px;
+  padding: 22px 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.14), rgba(251, 191, 36, 0.06));
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
