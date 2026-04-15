@@ -1,24 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import Invite from "./Invite";
+import RegisterForm from "./RegistrationForm";
+import Payment from "./Payment"; // make sure this exists
+import Countdown from "./Countdown";
+import AdminLogin from "./AdminLogin";
+import Admin from "./Admin";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Invite />} />
+      <Route path="/register" element={<RegisterForm />} />
+      <Route path="/payment" element={<Payment />} />
+      <Route path="/countdown" element={<Countdown />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
   );
 }
 
