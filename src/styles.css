@@ -26,6 +26,13 @@ html {
   --invite-ink-soft: #4a3f2e;
   --invite-gold: #e8c547;
   --invite-gold-deep: #c9a227;
+  /* Story panel (dark glass — pairs with gold headings) */
+  --invite-panel-bg: rgba(14, 16, 22, 0.85);
+  --invite-panel-border: rgba(232, 194, 58, 0.18);
+  --invite-panel-shadow: 0 18px 52px rgba(0, 0, 0, 0.5);
+  --invite-panel-text: rgba(252, 248, 238, 0.94);
+  --invite-panel-text-soft: rgba(210, 200, 180, 0.9);
+  --invite-panel-muted: rgba(185, 172, 150, 0.82);
 }
 
 body {
@@ -284,7 +291,7 @@ a:hover {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--invite-ink-soft);
+  color: rgba(210, 195, 160, 0.78);
 }
 
 .inviteNameInput {
@@ -292,8 +299,21 @@ a:hover {
   font-weight: 700 !important;
   font-size: 17px !important;
   border-radius: 12px !important;
-  background: rgba(255, 255, 255, 0.92) !important;
-  color: var(--invite-ink) !important;
+  background: rgba(6, 8, 12, 0.55) !important;
+  color: var(--invite-panel-text) !important;
+  border: 1px solid rgba(232, 194, 58, 0.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.inviteNameInput::placeholder {
+  color: rgba(170, 160, 140, 0.45);
+}
+
+.inviteNameInput:focus {
+  border-color: rgba(232, 194, 58, 0.42) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 3px rgba(232, 194, 58, 0.15);
 }
 
 .storyContinueBtn {
@@ -303,7 +323,7 @@ a:hover {
 .storyMutedCenter {
   text-align: center !important;
   margin-top: 14px !important;
-  color: var(--invite-ink-soft) !important;
+  color: var(--invite-panel-muted) !important;
 }
 
 .storyCenterPara {
@@ -341,15 +361,63 @@ a:hover {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(232, 194, 58, 0.45),
-    rgba(255, 255, 255, 0.35),
-    rgba(232, 194, 58, 0.45),
+    rgba(232, 194, 58, 0.25),
+    rgba(232, 210, 140, 0.55),
+    rgba(232, 194, 58, 0.25),
     transparent
   );
 }
 
 .storyJoinHeading {
   margin-top: 4px !important;
+}
+
+.storyVenueTitle {
+  margin-bottom: 10px !important;
+  font-size: clamp(18px, 4vw, 24px) !important;
+  line-height: 1.35 !important;
+}
+
+.storyMapsBtn {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 11px 16px;
+  border-radius: 12px;
+  text-align: center;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: rgba(252, 246, 228, 0.96);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(232, 194, 58, 0.28);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  transform: translateZ(0);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.storyMapsBtn:hover {
+  background: rgba(232, 194, 58, 0.14);
+  border-color: rgba(232, 210, 140, 0.42);
+}
+
+.storyMapsBtn:focus-visible {
+  outline: 2px solid rgba(92, 74, 31, 0.55);
+  outline-offset: 3px;
+}
+
+.storyCountdownBelowMaps {
+  margin-top: 18px !important;
 }
 
 .storyBookBtn {
@@ -519,35 +587,40 @@ a:hover {
   align-items: center;
   padding: 10px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(90, 80, 60, 0.14);
+  background: rgba(8, 10, 16, 0.55);
+  border: 1px solid rgba(232, 194, 58, 0.2);
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(60, 55, 45, 0.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 
 .inviteMetaLabel {
   font-size: 11px;
   font-weight: 700;
-  opacity: 0.72;
+  opacity: 0.85;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--invite-ink-soft);
+  color: rgba(200, 185, 155, 0.78);
 }
 
 .inviteMetaValue {
   font-weight: 800;
   font-size: 12px;
-  color: var(--invite-ink);
+  color: rgba(252, 246, 232, 0.94);
 }
 
 .inviteSection {
   margin-top: 16px;
   padding: 18px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.52);
-  border: 1px solid rgba(90, 80, 60, 0.12);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 14px 40px rgba(45, 40, 35, 0.1);
+  background: var(--invite-panel-bg);
+  border: 1px solid var(--invite-panel-border);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--invite-panel-shadow);
+}
+
+.inviteSection strong {
+  color: rgba(255, 236, 200, 0.95);
+  font-weight: 800;
 }
 
 .storyPanelInner.inviteSection {
@@ -561,14 +634,14 @@ a:hover {
   margin: 0;
   font-size: clamp(20px, 4.2vw, 26px);
   line-height: 1.25;
-  color: var(--invite-ink);
+  color: var(--invite-panel-text);
   letter-spacing: 0.02em;
 }
 
 .inviteSectionText {
   margin-top: 10px;
   font-weight: 700;
-  color: var(--invite-ink-soft);
+  color: var(--invite-panel-text-soft);
   line-height: 1.62;
 }
 
@@ -643,8 +716,8 @@ a:hover {
   margin-top: 10px;
   font-size: 12px;
   font-weight: 700;
-  opacity: 0.72;
-  color: var(--invite-ink-soft);
+  opacity: 0.85;
+  color: var(--invite-panel-muted);
 }
 
 .inviteCountdownSection .inviteCountdownLocation {
@@ -668,16 +741,18 @@ a:hover {
   min-width: 72px;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(90, 80, 60, 0.12);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  background: rgba(10, 12, 18, 0.72);
+  border: 1px solid rgba(232, 194, 58, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 .inviteCountUnit strong {
   font-size: 22px;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
-  color: var(--invite-ink);
+  color: rgba(255, 236, 200, 0.98);
   line-height: 1.1;
 }
 
@@ -687,7 +762,7 @@ a:hover {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--invite-ink-soft);
+  color: var(--invite-panel-muted);
 }
 
 .inviteBookingHint {
@@ -746,7 +821,7 @@ a:hover {
 .invitePage code {
   font-size: 0.92em;
   font-weight: 700;
-  color: #c9a018;
+  color: #e8c95a;
 }
 
 .inviteSectionTitle.inviteGlowText {

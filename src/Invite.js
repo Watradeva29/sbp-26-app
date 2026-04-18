@@ -4,6 +4,11 @@ import { useMemo, useEffect, useState, useCallback, useRef } from "react";
 const BOOKING_URL = (process.env.REACT_APP_BOOKING_URL || "").trim();
 /* Default: May 31, 4:30 PM IST — override with REACT_APP_EVENT_ISO in `.env` */
 const EVENT_ISO = (process.env.REACT_APP_EVENT_ISO || "2026-05-31T16:30:00+05:30").trim();
+/* Google Maps link for venue — override with REACT_APP_VENUE_MAPS_URL in `.env` if needed */
+const VENUE_MAPS_URL = (
+  process.env.REACT_APP_VENUE_MAPS_URL ||
+  "https://www.google.com/maps/search/?api=1&query=Holiday%20Inn%20Chennai%20OMR"
+).trim();
 
 /** Out fade duration — keep in sync with CSS --story-fade-ms */
 const FADE_MS = 620;
@@ -29,7 +34,14 @@ function formatName(raw) {
   if (!t) return "friend";
   return t
     .split(/\s+/)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .map((word) => {
+      if (!word) return "";
+      const letters = word.replace(/[^a-zA-Z]/g, "");
+      if (letters.length > 0 && letters === letters.toUpperCase()) {
+        return word;
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
     .join(" ");
 }
 
@@ -60,26 +72,23 @@ function Invite() {
 
   const msRemaining = eventDate.getTime() - now;
   const parts = toParts(msRemaining);
-  const hasStarted = msRemaining <= 0;
 
   const displayName = formatName(guestName);
 
-  const goNext = useCallback(() => {
+  const runSlideTransition = useCallback((computeNext) => {
     if (fadeOut) return;
-    if (slide >= LAST_SLIDE) return;
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
-      setSlide((s) => Math.min(s + 1, LAST_SLIDE));
+      setSlide(computeNext);
       return;
     }
     window.clearTimeout(fadeTimersRef.current.out);
     window.clearTimeout(fadeTimersRef.current.inn);
     setFadeOut(true);
     fadeTimersRef.current.out = window.setTimeout(() => {
-      setSlide((s) => Math.min(s + 1, LAST_SLIDE));
-      /* Separate macrotask after slide commit so the wrapper stays at opacity 0 for one paint, then fades in */
+      setSlide(computeNext);
       fadeTimersRef.current.inn = window.setTimeout(() => {
         if (panelWrapRef.current) {
           void panelWrapRef.current.offsetHeight;
@@ -87,7 +96,17 @@ function Invite() {
         setFadeOut(false);
       }, FADE_IN_GAP_MS);
     }, FADE_MS);
-  }, [fadeOut, slide]);
+  }, [fadeOut]);
+
+  const goNext = useCallback(() => {
+    if (slide >= LAST_SLIDE) return;
+    runSlideTransition((s) => Math.min(s + 1, LAST_SLIDE));
+  }, [slide, runSlideTransition]);
+
+  const goPrev = useCallback(() => {
+    if (slide <= 0) return;
+    runSlideTransition((s) => Math.max(s - 1, 0));
+  }, [slide, runSlideTransition]);
 
   const openBooking = () => {
     if (!BOOKING_URL) return;
@@ -102,15 +121,32 @@ function Invite() {
 
   const onStagePointer = (e) => {
     if (slide === 0) return;
-    if (slide >= LAST_SLIDE) return;
     const t = e.target;
     if (t.closest("button, a, input, textarea, label")) return;
-    goNext();
+    if (fadeOut) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const goBackZone = x < rect.width / 2;
+
+    if (goBackZone) {
+      goPrev();
+      return;
+    }
+    if (slide < LAST_SLIDE) {
+      goNext();
+    }
   };
 
   const onStageKeyDown = (e) => {
-    if (slide === 0 || slide >= LAST_SLIDE) return;
-    if (e.key === " " || e.key === "Enter") {
+    if (slide === 0) return;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      goPrev();
+      return;
+    }
+    if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") {
+      if (slide >= LAST_SLIDE) return;
       e.preventDefault();
       goNext();
     }
@@ -136,7 +172,7 @@ function Invite() {
         <main
           className="storyStage"
           role="presentation"
-          tabIndex={slide > 0 && slide < LAST_SLIDE ? 0 : undefined}
+          tabIndex={slide > 0 ? 0 : undefined}
           onClick={onStagePointer}
           onKeyDown={onStageKeyDown}
         >
@@ -228,19 +264,29 @@ function Invite() {
                 <>
                   <h2 className="inviteSectionTitle inviteGlowText">We unite one last time</h2>
                   <p className="inviteSectionText">
-                    Tickets and confirmations are handled on our booking page — you’ll get details automatically after
-                    you complete the steps there.
+                    Years took us down different roads — but some threads never snap. One more evening with the faces
+                    that knew you before the rest of the world did: the same laughter, the same easy warmth, everyone who
+                    walked those corridors with you — back in one room, like the batch never left.
                   </p>
                 </>
               )}
 
               {slide === 6 && (
                 <>
-                  <h2 className="inviteSectionTitle inviteGlowText">{hasStarted ? "We’re here!" : "Countdown"}</h2>
-                  <p className="inviteSectionText inviteCountdownLocation">
-                    <strong>Holiday Inn Chennai OMR</strong>
-                  </p>
-                  <div className="inviteCountdownRow">
+                  <h2 className="inviteSectionTitle inviteGlowText storyVenueTitle">
+                    Venue : Holiday Inn Chennai OMR
+                  </h2>
+                  <a
+                    href={VENUE_MAPS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="storyMapsBtn"
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="Open Holiday Inn Chennai OMR in Google Maps"
+                  >
+                    Open in Google Maps
+                  </a>
+                  <div className="inviteCountdownRow storyCountdownBelowMaps">
                     <span className="inviteCountUnit">
                       <strong>{parts.days}</strong>
                       <span>days</span>
@@ -297,9 +343,11 @@ function Invite() {
         {slide === 0 ? (
           <p className="storyTapHint">Enter your name and tap Continue</p>
         ) : slide < LAST_SLIDE ? (
-          <p className="storyTapHint">Tap anywhere to continue</p>
+          <p className="storyTapHint">Tap left to go back · right to continue</p>
         ) : (
-          <p className="storyTapHint storyTapHint--final">Countdown above — book your spot when you’re ready.</p>
+          <p className="storyTapHint storyTapHint--final">
+            Tap left to go back — venue & countdown above; book when you’re ready.
+          </p>
         )}
       </div>
     </div>
