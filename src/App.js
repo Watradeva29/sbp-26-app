@@ -1,7 +1,7 @@
-import Invite from "./Invite";
+import EventLanding from "./EventLanding";
 
 function App() {
-  return <Invite />;
+  return <EventLanding />;
 }
 
 export default App;
