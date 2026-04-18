@@ -150,7 +150,6 @@ function EventLanding() {
 
       <main className="eventLanding__main">
         <h1 className="eventLanding__title eventLanding__goldScript eventLanding__aurore">Aurore Nouvelle</h1>
-        <h2 className="eventLanding__title eventLanding__goldScript eventLanding__sankara">Sankara Batch Party</h2>
         <p className="eventLanding__year">2026</p>
         <h3 className="eventLanding__title eventLanding__goldScript eventLanding__sankara eventLanding__quoteLine">
           “A Night To Remember”

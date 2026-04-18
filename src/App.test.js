@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import App from "./App";
 
-test("renders invite title", () => {
+test("renders landing title", () => {
   render(<App />);
-  expect(screen.getByText(/Sankara Batch Party/i)).toBeInTheDocument();
+  expect(screen.getByText(/Aurore Nouvelle/i)).toBeInTheDocument();
 });
