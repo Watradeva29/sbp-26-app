@@ -2,18 +2,51 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Optional: drop `Amoresa-Regular.woff2` into `public/fonts/` and uncomment:
+@font-face {
+  font-family: "Amoresa";
+  src: url("/fonts/Amoresa-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+:root {
+  --font-body: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* Script display: Amoresa when provided locally, else Great Vibes (similar romantic script). */
+  --font-display: "Amoresa", "Great Vibes", "Segoe Script", cursive;
+  --invite-ink: #2a2318;
+  --invite-ink-soft: #4a3f2e;
+  --invite-gold: #e8c547;
+  --invite-gold-deep: #c9a227;
 }
 
 body {
-  /* Dark + royal */
-  background:
-    radial-gradient(1200px 800px at 15% 10%, rgba(124, 58, 237, 0.22), transparent 58%),
-    radial-gradient(900px 700px at 80% 22%, rgba(59, 130, 246, 0.18), transparent 56%),
-    radial-gradient(800px 600px at 70% 90%, rgba(251, 191, 36, 0.10), transparent 60%),
-    #070A14;
-  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-body);
+  font-weight: 600;
+  /* Campus photo + dark silver blend (image bundled from src/assets/campus-bg.png) */
+  background-color: #4e545e;
+  background-image:
+    radial-gradient(ellipse 140% 100% at 50% 0%, rgba(120, 125, 135, 0.32) 0%, transparent 55%),
+    linear-gradient(165deg, rgba(52, 56, 62, 0.68) 0%, rgba(42, 46, 52, 0.74) 42%, rgba(36, 39, 46, 0.78) 100%),
+    linear-gradient(to bottom, rgba(95, 100, 108, 0.28), rgba(55, 58, 65, 0.48)),
+    url("./assets/campus-bg.png");
+  background-size: cover, cover, cover, cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  color: var(--invite-ink);
   min-height: 100vh;
+}
+
+::selection {
+  background: rgba(232, 197, 71, 0.28);
 }
 
 .container {
@@ -72,7 +105,8 @@ h2 {
 }
 
 a {
-  color: rgba(251, 191, 36, 0.95);
+  color: #e0b82a;
+  font-weight: 700;
   text-decoration: none;
 }
 
@@ -108,24 +142,273 @@ a:hover {
 
 .invitePage {
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
   overflow: hidden;
-  padding-bottom: 40px;
 }
 
-.inviteAdminHotspot {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
+.inviteStoryRoot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: max(12px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+}
+
+.storyDots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: 8px 0 14px;
+  flex-shrink: 0;
+}
+
+.storyDot {
+  flex: 1;
+  max-width: 44px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.storyDot--active {
+  background: linear-gradient(90deg, #e8c23a, #fff2b8, #d4a520);
+  box-shadow: 0 0 12px rgba(255, 210, 120, 0.35);
+}
+
+.storyStage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  cursor: default;
+  outline: none;
+}
+
+.storyStage:focus-visible {
+  box-shadow: inset 0 0 0 2px rgba(232, 194, 58, 0.35);
+  border-radius: 16px;
+}
+
+.storyPanelWrap {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  --story-fade-ms: 620ms;
+  opacity: 1;
+  transform: translateZ(0) scale(1);
+  /* Opacity + transform only — animating filter on the wrapper often skips or stutters in WebKit */
+  transition:
+    opacity var(--story-fade-ms, 620ms) cubic-bezier(0.45, 0, 0.2, 1),
+    transform var(--story-fade-ms, 620ms) cubic-bezier(0.45, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.storyPanelWrap--exit {
   opacity: 0;
+  transform: translateZ(0) scale(0.94);
+}
+
+.storyPanelWrap--enter {
+  opacity: 1;
+  transform: translateZ(0) scale(1);
+}
+
+.storyPanelInner {
+  margin-top: 0;
+  width: 100%;
+}
+
+/* Remounts each slide — makes the “in” motion obvious */
+.storySlideContent {
+  animation: storySlideEnter var(--story-fade-ms, 620ms) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes storySlideEnter {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.inviteStoryKicker {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(250, 244, 228, 0.75);
+  margin-bottom: 8px;
+}
+
+.storyBrandTitle {
+  margin-top: 0 !important;
+  font-size: clamp(40px, 11vw, 56px) !important;
+}
+
+.inviteStoryLead {
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 18px);
+  line-height: 1.55;
+  color: rgba(250, 244, 228, 0.94);
+  margin-top: 14px;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
+}
+
+.inviteDear {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 8vw, 40px);
+  text-align: center;
+  font-weight: 700;
+  background: linear-gradient(92deg, #f0d060 0%, #fff4c4 35%, #e8c23a 70%, #c9a018 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 14px;
+}
+
+.inviteNameLabel {
+  display: block;
+  margin-top: 18px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--invite-ink-soft);
+}
+
+.inviteNameInput {
+  margin-top: 8px !important;
+  font-weight: 700 !important;
+  font-size: 17px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: var(--invite-ink) !important;
+}
+
+.storyContinueBtn {
+  margin-top: 18px !important;
+}
+
+.storyMutedCenter {
+  text-align: center !important;
+  margin-top: 14px !important;
+  color: var(--invite-ink-soft) !important;
+}
+
+.storyCenterPara {
+  text-align: center !important;
+  font-size: clamp(16px, 3.9vw, 18px) !important;
+}
+
+.storySlideHeading {
+  margin-bottom: 4px !important;
+}
+
+.storyMetaCompact {
+  margin-top: 14px !important;
+  justify-content: center !important;
+}
+
+.storyTapHint {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  padding-top: 10px;
+  color: rgba(250, 244, 228, 0.65);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+}
+
+.storyTapHint--final {
+  color: rgba(250, 244, 228, 0.52);
+}
+
+.storyFinalDivider {
+  height: 1px;
+  margin: 18px 0 14px;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(232, 194, 58, 0.45),
+    rgba(255, 255, 255, 0.35),
+    rgba(232, 194, 58, 0.45),
+    transparent
+  );
+}
+
+.storyJoinHeading {
+  margin-top: 4px !important;
+}
+
+.storyBookBtn {
+  margin-top: 14px !important;
+}
+
+.inviteAtmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.inviteOrb {
+  position: absolute;
+  width: min(520px, 70vw);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  filter: blur(40px);
+  opacity: 0.52;
+  transform: translate3d(0, 0, 0);
+  animation: invite-float 16s ease-in-out infinite;
+}
+
+.inviteOrbA {
+  top: -170px;
+  left: -160px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.55), transparent 62%);
+  animation-duration: 18s;
+}
+
+.inviteOrbB {
+  top: -120px;
+  right: -180px;
+  background: radial-gradient(circle at 40% 40%, rgba(160, 150, 130, 0.45), transparent 64%);
+  animation-duration: 20s;
+  animation-direction: reverse;
+}
+
+.inviteOrbC {
+  bottom: -260px;
+  left: 20%;
+  background: radial-gradient(circle at 50% 50%, rgba(190, 165, 95, 0.28), transparent 66%);
+  animation-duration: 22s;
+}
+
+.inviteNoise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.045;
+  background-image: radial-gradient(rgba(60, 55, 45, 0.14) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: multiply;
 }
 
 .inviteLogoBackdrop {
   position: absolute;
   inset: 0;
-  opacity: 0.08;
+  opacity: 0.06;
   pointer-events: none;
   user-select: none;
   transform: translateY(-20px);
@@ -136,63 +419,84 @@ a:hover {
   filter: grayscale(100%);
 }
 
-.inviteHero {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 26px 20px 10px;
-}
-
-.inviteHeroTopRow {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.inviteAdminButton {
-  border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  opacity: 0.65;
-  cursor: pointer;
-  width: auto;
-  padding: 6px 8px;
-  margin: 0;
-}
-
-.inviteKicker {
-  text-align: center;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.68);
-  margin-top: 18px;
-}
-
 .inviteTitle {
+  font-family: var(--font-display);
   text-align: center;
+  font-weight: 700;
   font-size: clamp(36px, 8vw, 64px);
-  line-height: 1.02;
-  margin-top: 10px;
+  line-height: 1.08;
+  margin-top: 28px;
+  background: linear-gradient(
+    92deg,
+    #f0d060 0%,
+    #fff4c4 28%,
+    #e8c23a 55%,
+    #c9a018 82%,
+    #a67c0a 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.inviteGlowText {
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.45))
+    drop-shadow(0 2px 12px rgba(255, 210, 90, 0.4))
+    drop-shadow(0 0 26px rgba(255, 200, 80, 0.35));
 }
 
 .inviteSubtitle {
   text-align: center;
+  font-weight: 700;
   max-width: 58ch;
-  margin: 12px auto 0;
-  color: rgba(255, 255, 255, 0.76);
-  line-height: 1.5;
+  margin: 14px auto 0;
+  color: var(--invite-ink-soft);
+  line-height: 1.55;
 }
 
-.inviteCtas {
-  display: grid;
-  gap: 10px;
-  max-width: 420px;
-  margin: 18px auto 0;
+.inviteBtn {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  padding: 13px 14px;
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  transform: translateZ(0);
+}
+
+.inviteBtn:focus-visible {
+  outline: 2px solid rgba(92, 74, 31, 0.55);
+  outline-offset: 3px;
+}
+
+.inviteBtn::after {
+  content: "";
+  position: absolute;
+  inset: -40% -60%;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.26) 44%,
+    transparent 58%
+  );
+  transform: translateX(-30%) rotate(10deg);
+  opacity: 0;
+}
+
+.inviteBtn:hover::after {
+  opacity: 1;
+  animation: invite-sheen 900ms ease forwards;
 }
 
 .invitePrimary {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(124, 58, 237, 0.95));
-  color: rgba(7, 10, 20, 0.95);
+  background: linear-gradient(135deg, #f0d060, #d4a520 42%, #a67c12 100%);
+  color: rgba(18, 16, 12, 0.95);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
 }
 
 .inviteSecondary {
@@ -206,7 +510,7 @@ a:hover {
   gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .inviteMetaPill {
@@ -215,48 +519,57 @@ a:hover {
   align-items: center;
   padding: 10px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(90, 80, 60, 0.14);
   backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(60, 55, 45, 0.08);
 }
 
 .inviteMetaLabel {
   font-size: 11px;
-  opacity: 0.7;
+  font-weight: 700;
+  opacity: 0.72;
   text-transform: uppercase;
   letter-spacing: 0.14em;
+  color: var(--invite-ink-soft);
 }
 
 .inviteMetaValue {
-  font-weight: 700;
+  font-weight: 800;
   font-size: 12px;
-}
-
-.inviteContent {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 10px 20px;
+  color: var(--invite-ink);
 }
 
 .inviteSection {
   margin-top: 16px;
   padding: 18px;
   border-radius: 16px;
-  background: rgba(30, 41, 59, 0.55);
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(90, 80, 60, 0.12);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px rgba(45, 40, 35, 0.1);
+}
+
+.storyPanelInner.inviteSection {
+  margin-top: 0;
 }
 
 .inviteSectionTitle {
-  text-align: left;
+  font-family: var(--font-body);
+  font-weight: 800;
+  text-align: center;
   margin: 0;
-  font-size: 18px;
+  font-size: clamp(20px, 4.2vw, 26px);
+  line-height: 1.25;
+  color: var(--invite-ink);
+  letter-spacing: 0.02em;
 }
 
 .inviteSectionText {
   margin-top: 10px;
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.6;
+  font-weight: 700;
+  color: var(--invite-ink-soft);
+  line-height: 1.62;
 }
 
 .inviteGallery {
@@ -269,8 +582,16 @@ a:hover {
 .inviteGalleryCard {
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  background: rgba(2, 6, 23, 0.35);
+  border: 1px solid rgba(90, 80, 60, 0.14);
+  background: rgba(255, 255, 255, 0.45);
+  transform: translateZ(0);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.inviteGalleryCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(138, 114, 40, 0.35);
+  box-shadow: 0 18px 48px rgba(45, 40, 35, 0.14);
 }
 
 .inviteGalleryImg {
@@ -278,11 +599,17 @@ a:hover {
   width: 100%;
   object-fit: cover;
   display: block;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(34, 197, 94, 0.18));
+  background: linear-gradient(135deg, rgba(200, 190, 165, 0.45), rgba(170, 160, 140, 0.35));
+  transition: transform 220ms ease, filter 220ms ease;
 }
 
 .inviteGalleryImgPlaceholder {
   display: block;
+}
+
+.inviteGalleryCard:hover .inviteGalleryImg {
+  transform: scale(1.03);
+  filter: saturate(1.08);
 }
 
 .inviteGalleryBody {
@@ -290,25 +617,141 @@ a:hover {
 }
 
 .inviteGalleryLabel {
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  color: var(--invite-ink);
+}
+
+.inviteGalleryLabel.inviteGlowText {
+  background: linear-gradient(92deg, #d4a520 0%, #fff0b0 45%, #c9a018 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .inviteGalleryHint {
   margin-top: 6px;
   font-size: 12px;
-  opacity: 0.72;
+  font-weight: 700;
+  opacity: 0.78;
+  color: var(--invite-ink-soft);
 }
 
 .inviteSectionFootnote {
   margin-top: 10px;
   font-size: 12px;
-  opacity: 0.65;
+  font-weight: 700;
+  opacity: 0.72;
+  color: var(--invite-ink-soft);
 }
 
-.inviteFinalCta {
-  margin-top: 16px;
-  padding: 22px 18px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(124, 58, 237, 0.14), rgba(251, 191, 36, 0.06));
-  border: 1px solid rgba(148, 163, 184, 0.18);
+.inviteCountdownSection .inviteCountdownLocation {
+  text-align: center;
+  margin-top: 6px;
+}
+
+.inviteCountdownRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.inviteCountUnit {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(90, 80, 60, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.inviteCountUnit strong {
+  font-size: 22px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--invite-ink);
+  line-height: 1.1;
+}
+
+.inviteCountUnit span:last-child {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--invite-ink-soft);
+}
+
+.inviteBookingHint {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@keyframes invite-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(18px, 14px, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes invite-sheen {
+  from {
+    transform: translateX(-35%) rotate(10deg);
+  }
+  to {
+    transform: translateX(35%) rotate(10deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .inviteOrb,
+  .inviteBtn::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .storyPanelWrap {
+    transition-property: opacity !important;
+    transition-duration: var(--story-fade-ms, 620ms) !important;
+    transform: none !important;
+  }
+
+  .storyPanelWrap--exit {
+    transform: none !important;
+  }
+
+  .storySlideContent {
+    animation: none !important;
+  }
+}
+
+.invitePage code {
+  font-size: 0.92em;
+  font-weight: 700;
+  color: #c9a018;
+}
+
+.inviteSectionTitle.inviteGlowText {
+  background: linear-gradient(92deg, #e8c23a 0%, #fff2b8 40%, #d4a520 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
